@@ -33,10 +33,10 @@ jobs:
      - name: Cleanup
        uses: rokibhasansagar/slimhub_actions@main
 
-      - name: Configure Git
-        run: |
-         git config --global user.name "${{ github.event.inputs.USER_NAME }}"
-         git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
+     - name: Configure Git
+       run: |
+        git config --global user.name "${{ github.event.inputs.USER_NAME }}"
+        git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
 
      - name: Clean up disk space
        run: |
@@ -66,7 +66,7 @@ jobs:
         sed -i 's/ -dirty//g' kernel_platform/common/scripts/setlocalversion
         sed -i 's/ -dirty//g' kernel_platform/msm-kernel/scripts/setlocalversion
 
-     - name: Set up KernelSU
+     - name: Set up KernelSU Next
        run: |
         cd kernel_workspace/kernel_platform
         curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -s v1.0.3
@@ -75,10 +75,10 @@ jobs:
         echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
         sed -i "s/DKSU_VERSION=16/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
         
-      - name: Add make name
-        run: |
-         cd kernel_workspace/kernel_platform/common/scripts
-         sed -i '$s|echo "\$res"|echo "\$res-bymcxiaochen+"|' ./setlocalversion
+     - name: Add make name
+       run: |
+        cd kernel_workspace/kernel_platform/common/scripts
+        sed -i '$s|echo "\$res"|echo "\$res-bymcxiaochen+"|' ./setlocalversion
         
      - name: Build kernel
        run: |
