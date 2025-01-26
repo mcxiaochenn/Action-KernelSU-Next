@@ -22,6 +22,14 @@ on:
         description: "内核版本"
         required: true
         default: '6.1'
+      USER_NAME:
+        description: "Github名字"
+        required: true
+        default: 'mcxiaochenn'
+      USER_MAIL:
+        description: "Github邮箱"
+        required: true
+        default: 'mcxiaochenn.yyds@gmail.com'
 
 jobs:
   build:
@@ -40,8 +48,8 @@ jobs:
           
       - name: Configure Git
         run: |
-         git config --global user.name "mcxiaochenn"
-         git config --global user.email "mcxiaochenn.yyds@gmail.com"
+         git config --global user.name "${{ github.event.inputs.USER_NAME }}"
+         git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
 
       - name: Install dependencies
         run: |
@@ -64,7 +72,7 @@ jobs:
          sed -i 's/ -dirty//g' kernel_platform/common/scripts/setlocalversion
          sed -i 's/ -dirty//g' kernel_platform/msm-kernel/scripts/setlocalversion
 
-      - name: Set up KernelSU Next
+      - name: Set up KernelSU
         run: |
          cd kernel_workspace/kernel_platform
          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
@@ -88,6 +96,11 @@ jobs:
            patch -p1 --forward < 10_enable_susfs_for_ksu.patch || true
            cd ../common
            patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+           
+      - name: Add make name
+        run: |
+         cd kernel_workspace/kernel_platform/common/scripts
+         sed -i '$s|echo "\$res"|echo "\$res-bymcxiaochen+"|' ./setlocalversion
            
       - name: Build kernel
         run: |
