@@ -1,4 +1,4 @@
-name: Build KernelSU Next
+name: Build KernelSU Next-ci
 on:
   workflow_dispatch:
     inputs:
