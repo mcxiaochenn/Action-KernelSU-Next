@@ -14,7 +14,14 @@ on:
         description: "处理器代号"
         required: true
         default: 'pineapple'
-
+      USER_NAME:
+        description: "Github名字"
+        required: true
+        default: 'mcxiaochenn'
+      USER_MAIL:
+        description: "Github邮箱"
+        required: true
+        default: 'mcxiaochenn.yyds@gmail.com'
 jobs:
   build:
    runs-on: ubuntu-latest
@@ -26,10 +33,10 @@ jobs:
      - name: Cleanup
        uses: rokibhasansagar/slimhub_actions@main
 
-     - name: Configure Git
-       run: |
-        git config --global user.name "wuua"
-        git config --global user.email "3436678798@qq.com"
+      - name: Configure Git
+        run: |
+         git config --global user.name "${{ github.event.inputs.USER_NAME }}"
+         git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
 
      - name: Clean up disk space
        run: |
@@ -67,6 +74,11 @@ jobs:
         KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" 10200)
         echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
         sed -i "s/DKSU_VERSION=16/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
+        
+      - name: Add make name
+        run: |
+         cd kernel_workspace/kernel_platform/common/scripts
+         sed -i '$s|echo "\$res"|echo "\$res-bymcxiaochen+"|' ./setlocalversion
         
      - name: Build kernel
        run: |
