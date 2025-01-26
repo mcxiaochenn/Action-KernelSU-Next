@@ -14,6 +14,14 @@ on:
         description: "处理器代号"
         required: true
         default: 'pineapple'
+      USER_NAME:
+        description: "Github名字"
+        required: true
+        default: 'mcxiaochenn'
+      USER_MAIL:
+        description: "Github邮箱"
+        required: true
+        default: 'mcxiaochenn.yyds@gmail.com'
 
 jobs:
   build:
@@ -28,8 +36,8 @@ jobs:
 
      - name: Configure Git
        run: |
-        git config --global user.name "mcxiaochenn"
-        git config --global user.email "mcxiaochenn.yyds@gmail.com"
+        git config --global user.name "${{ github.event.inputs.USER_NAME }}"
+        git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
 
      - name: Clean up disk space
        run: |
