@@ -5,11 +5,11 @@ on:
       CPU:
         description: "分支"
         required: true
-        default: 'sm7675'
+        default: 'sm8650'
       FEIL:
         description: "配置文件"
         required: true
-        default: 'oneplus_ace_3v_v'
+        default: 'oneplus_ace_3_pro_v'
       CPUD:
         description: "处理器代号"
         required: true
@@ -22,6 +22,14 @@ on:
         description: "内核版本"
         required: true
         default: '6.1'
+      USER_NAME:
+        description: "Github名字"
+        required: true
+        default: 'mcxiaochenn'
+      USER_MAIL:
+        description: "Github邮箱"
+        required: true
+        default: 'mcxiaochenn.yyds@gmail.com'
 
 jobs:
   build:
@@ -40,8 +48,8 @@ jobs:
           
       - name: Configure Git
         run: |
-         git config --global user.name "build"
-         git config --global user.email "3436378798@qq.com"
+         git config --global user.name "${{ github.event.inputs.USER_NAME }}"
+         git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
 
       - name: Install dependencies
         run: |
@@ -104,6 +112,11 @@ jobs:
            
            cp ../kernel_patches/selinux.c_fix.patch ./
            patch -p1 -F 3 < selinux.c_fix.patch
+
+      - name: Add make name
+        run: |
+         cd kernel_workspace/kernel_platform/common/scripts
+         sed -i '$s|echo "\$res"|echo "\$res-bymcxiaochen+"|' ./setlocalversion
            
       - name: Build kernel
         run: |
