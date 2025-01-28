@@ -5,11 +5,11 @@ on:
       CPU:
         description: "分支"
         required: true
-        default: 'sm8650'
+        default: 'sm7675'
       FEIL:
         description: "配置文件"
         required: true
-        default: 'oneplus_ace_3_pro_v'
+        default: 'oneplus_ace_3v_v'
       CPUD:
         description: "处理器代号"
         required: true
@@ -22,6 +22,7 @@ on:
         description: "Github邮箱"
         required: true
         default: 'mcxiaochenn.yyds@gmail.com'
+
 jobs:
   build:
    runs-on: ubuntu-latest
@@ -37,7 +38,7 @@ jobs:
        run: |
         git config --global user.name "${{ github.event.inputs.USER_NAME }}"
         git config --global user.email "${{ github.event.inputs.USER_MAIL }}"
-
+        
      - name: Clean up disk space
        run: |
         sudo apt-get clean
@@ -66,20 +67,14 @@ jobs:
         sed -i 's/ -dirty//g' kernel_platform/common/scripts/setlocalversion
         sed -i 's/ -dirty//g' kernel_platform/msm-kernel/scripts/setlocalversion
 
-     - name: Set up KernelSU Next
+     - name: Set up KernelSU
        run: |
         cd kernel_workspace/kernel_platform
-        curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -
+        curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -s v1.0.3
         cd KernelSU-Next
         KSU_VERSION=$(expr $(/usr/bin/git rev-list --count HEAD) "+" 10200)
         echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
         sed -i "s/DKSU_VERSION=16/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
-        
-     - name: Add make name
-       run: |
-        cd kernel_workspace/kernel_platform
-        sed -i '$s|echo "\$res"|echo "\$res-XiaoChen+"|' ./common/scripts/setlocalversion
-        sed -i "/stable_scmversion_cmd/s/-maybe-dirty//g" ./build/kernel/kleaf/impl/stamp.bzl
         
      - name: Build kernel
        run: |
@@ -103,4 +98,3 @@ jobs:
        with:
         name: boot_KernelSU_Next_${{ env.KSUVER }}_${{ github.event.inputs.FEIL }}
         path: kernel_workspace/kernel_platform/out/msm-kernel-${{ github.event.inputs.CPUD }}-gki/dist/boot.img
-
