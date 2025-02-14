@@ -1,4 +1,4 @@
-name: Build KernelSU Next
+name: Build MagicMount-KernelSU Next
 on:
   workflow_dispatch:
     inputs:
